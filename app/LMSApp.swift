@@ -2,6 +2,7 @@
 // 앱 안 브라우저로 로그인해서 조회한다 (읽기 전용: 재생·출석·제출 등 상태를 바꾸는 동작 없음).
 import AppKit
 import SwiftUI
+import Combine
 
 let lmsBase = "https://learning.hanyang.ac.kr"
 let lmsFiles = AppFiles("LMS 체커")
