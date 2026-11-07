@@ -60,17 +60,36 @@ LMS 체커                       마지막 확인 11/7(토) 13:18 · 5초 전   
 - Apple Silicon과 Intel Mac 모두 지원
 - 한양대 포털 아이디와 비밀번호
 
-### 1. 다운로드
+### 방법 A: Homebrew로 설치 (추천)
+
+[Homebrew](https://brew.sh)를 쓰고 있다면 터미널에 아래 명령을 붙여 넣으면 끝이에요. 보안 경고도 뜨지 않아요.
+
+```bash
+brew tap anrqkdrnl/tap
+brew trust anrqkdrnl/tap        # Homebrew 7 이상에서 필요해요 (예전 버전이면 생략)
+brew install --cask lms-checker
+```
+
+설치가 끝나면 응용 프로그램 폴더에서 **`LMS 체커`**을 열면 돼요.
+
+- 업데이트: `brew upgrade --cask lms-checker`
+- 삭제: `brew uninstall --cask lms-checker` (앱 데이터까지 지우려면 `--zap`을 붙여요)
+
+> `brew trust`는 Homebrew 공식 저장소가 아닌 tap(개인 저장소)을 믿고 쓰겠다고 등록하는 명령이에요. 이 tap에 들어 있는 설치 스크립트는 [anrqkdrnl/homebrew-tap](https://github.com/anrqkdrnl/homebrew-tap)에서 직접 확인할 수 있어요.
+
+### 방법 B: 직접 다운로드
+
+#### 1. 다운로드
 
 [**Releases**](../../releases/latest) 페이지에서 `LMSChecker.zip`을 받아서 압축을 풀어요.
 
-### 2. 응용 프로그램 폴더로 옮기기
+#### 2. 응용 프로그램 폴더로 옮기기
 
 압축을 풀면 나오는 **`LMS 체커.app`**을 Finder의 **응용 프로그램** 폴더로 드래그해요.
 
 > 자동 실행을 쓰려면 응용 프로그램 폴더에 두는 걸 권장해요. 나중에 앱 위치를 옮겨도 앱을 한 번 열면 자동 실행 경로가 알아서 갱신돼요.
 
-### 3. 처음 열기 (보안 경고 넘기기)
+#### 3. 처음 열기 (보안 경고 넘기기)
 
 Apple 유료 개발자 인증을 받지 않은 앱이라서 처음 열 때 macOS가 막아요. **한 번만** 아래처럼 허용하면 돼요.
 
@@ -172,6 +191,17 @@ macOS 키체인에 저장돼요. 키체인은 Safari나 Chrome이 비밀번호�
 ---
 
 ## 삭제하기
+
+**Homebrew로 설치했다면**
+
+```bash
+brew uninstall --cask lms-checker          # 앱 + 자동 실행 등록 삭제
+brew uninstall --zap --cask lms-checker    # 앱 데이터와 설정까지 삭제
+```
+
+키체인에 저장된 계정 정보는 Homebrew가 지우지 않아요. 완전히 지우려면 `security delete-generic-password -s hyu-lms-id; security delete-generic-password -s hyu-lms-pw`를 실행해요.
+
+**직접 다운로드했다면**
 
 1. 설정에서 **매일 아침 자동 확인**을 꺼요. 자동 실행 등록이 지워져요.
 2. 응용 프로그램 폴더에서 `LMS 체커.app`을 휴지통으로 옮겨요.
