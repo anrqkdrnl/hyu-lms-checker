@@ -189,7 +189,7 @@ macOS 키체인에 저장돼요. 키체인은 Safari나 Chrome이 비밀번호�
 아니요. 이 앱은 **목록을 확인만** 해요. 재생이나 출석 처리 기능은 없고 앞으로도 넣지 않아요.
 
 **Q. 예전 터미널(Python) 버전을 쓰고 있었어요.**
-설정 화면에 **예전 버전 자동 실행 끄기** 버튼이 나타나요. 눌러서 끄면 팝업이 두 번 뜨지 않아요. 예전 코드는 [`legacy-python/`](legacy-python/)에 남겨 뒀어요.
+예전 버전의 자동 실행을 끄지 않으면 팝업이 두 번 떠요. 터미널에서 `launchctl bootout gui/$(id -u)/<예전 자동 실행 이름>`으로 끄고, `~/Library/LaunchAgents`의 예전 plist를 지워 주세요. 예전 코드는 [`legacy-python/`](legacy-python/)에 남겨 뒀어요.
 
 ---
 
@@ -212,15 +212,15 @@ brew uninstall --zap --cask lms-checker    # 앱 데이터와 설정까지 삭�
 
    ```bash
    rm -rf ~/Library/Application\ Support/LMS\ 체커
-   defaults delete com.seongsu.lmschecker
+   defaults delete io.github.anrqkdrnl.lmschecker
    security delete-generic-password -s hyu-lms-id; security delete-generic-password -s hyu-lms-pw
    ```
 
    자동 확인을 끄지 않고 앱을 지웠다면 아래 명령도 실행해 주세요:
 
    ```bash
-   launchctl bootout gui/$(id -u)/com.seongsu.lmschecker.auto
-   rm ~/Library/LaunchAgents/com.seongsu.lmschecker.auto.plist
+   launchctl bootout gui/$(id -u)/io.github.anrqkdrnl.lmschecker.auto
+   rm ~/Library/LaunchAgents/io.github.anrqkdrnl.lmschecker.auto.plist
    ```
 
 ---
@@ -250,9 +250,9 @@ launchd (10분마다) → LMS 체커 --auto → 확인 시각 회차 가드 → 
 |---|---|
 | `~/Library/Application Support/LMS 체커/latest.json` | 마지막 결과 |
 | `~/Library/Application Support/LMS 체커/error.log` | 오류 기록 |
-| `~/Library/LaunchAgents/com.seongsu.lmschecker.auto.plist` | 자동 실행 등록 |
+| `~/Library/LaunchAgents/io.github.anrqkdrnl.lmschecker.auto.plist` | 자동 실행 등록 |
 | 키체인 `hyu-lms-id` / `hyu-lms-pw` | 포털 아이디 / 비밀번호 |
-| `defaults read com.seongsu.lmschecker` | 마지막 실행일, 설정 완료 여부 |
+| `defaults read io.github.anrqkdrnl.lmschecker` | 마지막 실행일, 설정 완료 여부 |
 
 ---
 

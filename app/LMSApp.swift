@@ -7,7 +7,7 @@ import Combine
 let lmsBase = "https://learning.hanyang.ac.kr"
 let lmsFiles = AppFiles("LMS 체커")
 let lmsCreds = Credentials(idService: "hyu-lms-id", pwService: "hyu-lms-pw")
-let lmsAgent = LaunchAgent(label: "com.seongsu.lmschecker.auto")
+let lmsAgent = LaunchAgent(label: "io.github.anrqkdrnl.lmschecker.auto")
 let lmsResultFile = "latest.json"
 
 // MARK: - 결과 모델
@@ -394,7 +394,6 @@ struct LMSSettingsView: View {
         Form {
             CredentialSection(title: "한양대 포털 계정", creds: lmsCreds)
             AutoRunSection(agent: lmsAgent, action: "결과 창을 띄워줘")
-            LegacySection(label: "com.seongsu.lmscheck", folder: ".lms_check")
             Section {
                 Button("오류 기록 보기") { NSWorkspace.shared.open(lmsFiles.url("error.log")) }
                 Button("데이터 폴더 열기") { NSWorkspace.shared.open(lmsFiles.dir) }
@@ -417,6 +416,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let args = CommandLine.arguments
 
     func applicationDidFinishLaunching(_ n: Notification) {
+        Migration.defaults("lmschecker")
         Notifier.shared.setUp()
         Windows.installMenu(appName: "LMS 체커", target: self, settings: #selector(showSettings), refresh: #selector(refresh))
         store.openSettings = { [weak self] in self?.showSettings() }
@@ -430,7 +430,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         Task {
+            await Migration.agents("lmschecker", current: lmsAgent)
             await lmsAgent.refreshIfMoved()
+            // 이미 허용/거부했으면 아무것도 안 뜸. 앱 ID가 바뀐 뒤 처음 열 때만 macOS가 다시 물어봄
+            if UserDefaults.standard.bool(forKey: "setupDone") { Notifier.shared.requestPermission() }
             if UserDefaults.standard.bool(forKey: "setupDone") { showMain() } else { showSetup() }
         }
     }

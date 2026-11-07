@@ -6,7 +6,7 @@
 set -e
 cd "$(dirname "$0")"
 D="$HOME/.lms_check"
-LABEL="com.seongsu.lmscheck"
+LABEL="io.github.anrqkdrnl.lmscheck"
 P="$HOME/Library/LaunchAgents/$LABEL.plist"
 RESET=0; NOAPP=0
 for a in "$@"; do

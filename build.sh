@@ -6,7 +6,7 @@
 set -e
 cd "$(dirname "$0")"
 VER="$(cat VERSION)"
-app/build_bundle.sh "LMS 체커" LMSChecker com.seongsu.lmschecker LMSApp.swift graduationcap.fill 4F7BF7 2A3FB8 "$PWD/build" "$VER" >/dev/null
+app/build_bundle.sh "LMS 체커" LMSChecker io.github.anrqkdrnl.lmschecker LMSApp.swift graduationcap.fill 4F7BF7 2A3FB8 "$PWD/build" "$VER" >/dev/null
 APP="build/LMS 체커.app"
 echo "빌드 완료: $APP (v$VER)"
 for a in "$@"; do
