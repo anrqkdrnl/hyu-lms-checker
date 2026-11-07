@@ -392,7 +392,7 @@ struct LMSSettingsView: View {
     var body: some View {
         Form {
             CredentialSection(title: "한양대 포털 계정", creds: lmsCreds)
-            AutoRunSection(agent: lmsAgent, description: "매일 05시 이후 Mac을 처음 쓸 때 1번 확인해서 결과 창을 띄워줘")
+            AutoRunSection(agent: lmsAgent, action: "결과 창을 띄워줘")
             LegacySection(label: "com.seongsu.lmscheck", folder: ".lms_check")
             Section {
                 Button("오류 기록 보기") { NSWorkspace.shared.open(lmsFiles.url("error.log")) }
@@ -476,10 +476,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let view = SetupView(
             appName: "LMS 체커", icon: "graduationcap.fill", tint: .blue,
             features: ["아직 안 들은 사이버강의와 출석 인정 마감", "마감이 지난 미제출 과제", "7일 안에 마감되는 과제·퀴즈·토론",
-                       "매일 아침 자동으로 확인해서 알려줌", "읽기 전용 — 강의 재생·출석·제출은 절대 건드리지 않음"],
+                       "정한 시각에 자동으로 확인해서 알려줌", "읽기 전용 — 강의 재생·출석·제출은 절대 건드리지 않음"],
             accountTitle: "LMS(learning.hanyang.ac.kr)에 로그인할 때 쓰는 한양대 포털 계정을 입력해줘.",
             creds: lmsCreds, agent: lmsAgent,
-            autoDescription: "매일 05시 이후 Mac을 처음 쓸 때 1번 확인해서 결과 창을 띄워줘",
+            autoAction: "결과 창을 띄워줘",
             testLogin: { try await LMSEngine().testLogin($0, $1) },
             onFinish: { [weak self] in
                 guard let self else { return }
@@ -491,7 +491,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Windows.present(setupWindow!)
     }
 
-    // launchd(--auto): 하루 1번, 결과 창(=예전 팝업) 띄우기
+    // launchd(--auto): 설정한 시각마다 1번, 결과 창(=예전 팝업) 띄우기
     var autoRunning = false
 
     func runAuto() async {
@@ -523,7 +523,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         let e = lastError!
         if e.isTransient && guardian.recordFailure() < 3 { return finishAuto(show: false) }
-        guardian.markDone()  // 로그인 거부는 반복하면 계정이 잠길 수 있어 오늘은 중단
+        if e.isTransient { guardian.markDone() } else { guardian.stopForToday() }  // 로그인 거부는 반복하면 계정이 잠길 수 있어 오늘은 중단
         Notifier.shared.post("LMS 체커 오류", e.message)
         store.error = e.message
         finishAuto(show: true)
